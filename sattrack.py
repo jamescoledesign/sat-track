@@ -53,9 +53,9 @@ class SatTrackApp(App[None]):
     def compose(self) -> ComposeResult:
 
         with Horizontal(id="buttons"):
-            yield Button("Tracking", id="tracking", classes="top-button")
-            yield Button("Settings", id="settings", classes="top-button")
-            yield Button("Quit", id="quit", classes="top-button")
+            yield Button("Tracking", id="tracking", classes="left-button")
+            yield Button("Settings", id="settings", classes="middle-button")
+            yield Button("Quit", id="quit", classes="right-button")
 
         with ContentSwitcher(initial="tracking", id="switcher"):
 
