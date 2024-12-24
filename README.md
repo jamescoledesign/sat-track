@@ -18,4 +18,4 @@ python sattrack.py
 
 **User Interface**
 
-<img src="./images/sattrack-ui.png" style="max-width: 500px"/>
+<img src="./images/sattrack-ui-v2.png" style="max-width: 300px"/>

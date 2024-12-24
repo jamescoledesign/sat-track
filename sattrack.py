@@ -9,10 +9,10 @@ __author__ = "James Cole <james@jamescole.info"
 from sattrack_functions import *
 import pandas as pd
 from skyfield.api import load
-
 from textual.app import App, ComposeResult
 from textual.containers import Horizontal, VerticalScroll, Grid, Vertical
 from textual.widgets import *
+
 
 # Load CSV
 sats_df = pd.read_csv("satellites.csv")
@@ -20,7 +20,6 @@ ts = load.timescale()
 
 # Your current location (lat/lon)
 ground_station = (33.253408, -97.134179)
-
 
 # Defaults
 sats = sats_df["sat_name"]
@@ -162,6 +161,7 @@ class SatTrackApp(App[None]):
                     Switch(self.settings["Show XYZ"][1], name="Show XYZ")
                 )
                 
+
     def on_radio_set_changed(self, event: RadioSet.Changed) -> None:
         pressed_name = event.pressed.name
         selected = event.pressed.label
@@ -174,6 +174,7 @@ class SatTrackApp(App[None]):
         self.query_one(f"#{pressed_name}", Static).update(
             event.pressed.label
         )
+
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         if event.button.id == "quit":
