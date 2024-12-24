@@ -6,6 +6,7 @@ Satellite Tracker
 __author__ = "James Cole <james@jamescole.info"
 
 
+
 from sattrack_functions import *
 import pandas as pd
 from skyfield.api import load
@@ -14,25 +15,35 @@ from textual.app import App, ComposeResult
 from textual.containers import Horizontal, VerticalScroll, Grid, Vertical
 from textual.widgets import *
 
+
+labels = ['Timestamp', 'Visibility', 'Distance', 'Altitude', 'Azimuth', 'X', 'Y', 'Z']
+decimal_degrees = []
+dms = []
+
+sats = ["GOES-16", "GOES-17", "GOES-19"]
+
+user_preferences = [('satellite', 'GOES-16', Select((sat, sat) for sat in sats)), 
+                    ('coordinates', 'decimal_degrees', Switch()), 
+                    ('show_xyz', True, Switch()), ('rounding', '4', '4')]
+
 # Load CSV
-sats_df = pd.read_csv("satellites.csv")
-ts = load.timescale()
+sats_df = pd.read_csv('satellites.csv')
 
 # Your current location (lat/lon)
 ground_station = (33.253408, -97.134179)
 
+ts = load.timescale()
 
-# Defaults
-sats = sats_df["sat_name"]
-selected_sat = 0
-sat_name = sats[selected_sat]
-sat_data = sats_df.iloc[selected_sat]
-line1 = sat_data["tle_line1"]
-line2 = sat_data["tle_line2"]
-coordinates = "Decimal Degrees"
-rounding = 5
-xyz = True
+# Placeholder index for testing
+index = 0
 
+sat_name = sats[index]
+sat_data = sats_df.iloc[index]
+line1 = sat_data['tle_line1']
+line2 = sat_data['tle_line2']
+
+# positions = skyfieldTracker(line1, line2, sat_name, ground_station)
+# print(positions[0])
 class SatTrackApp(App[None]):
     CSS_PATH = "styles.tcss"
     BINDINGS = [("q", "request_quit", "Quit")]
@@ -43,14 +54,7 @@ class SatTrackApp(App[None]):
     button_msg = "Start"
 
     data = [str(0)] * 8
-    
-    settings = {
-        "Satellite": [sats, sat_name],
-        "Coordinates": [["Decimal Degrees", "DMS"], coordinates],
-        "Rounding": [["2", "3", "4", "5", "None"], rounding],
-        "Show XYZ": [[True, False], xyz]
-    }
-    
+
     def compose(self) -> ComposeResult:
 
         with Horizontal(id="buttons"):
@@ -58,41 +62,41 @@ class SatTrackApp(App[None]):
             yield Button("Settings", id="settings", classes="top-button")
             yield Button("Quit", id="quit", classes="top-button")
 
-        with ContentSwitcher(initial="tracking", id="switcher"):
+        tracked_sat = Static(sat_name, id='tracked-sat')
+        tracked_sat.border_title = "Satellite"
+        yield tracked_sat
+
+        with ContentSwitcher(initial="tracking", id='switcher'):
 
             # Tracking tab
             with VerticalScroll(id="tracking"):
-                
-                tracked_sat = Static(sat_name, id="tracked-sat")
-                tracked_sat.border_title = "Satellite"
-                yield tracked_sat
-                        
+
                 # Top boxes
-                lbl1 = Label(self.data[0], classes="tracking-header-item", id="d0")
+                lbl1 = Label(self.data[0], classes="tracking-header-item", id='d0')
                 lbl1.border_title = "Timestamp" 
-                lbl2 = Label(self.data[1], classes="tracking-header-item", id="d1")
+                lbl2 = Label(self.data[1], classes="tracking-header-item", id='d1')
                 lbl2.border_title = "Visibility" 
 
                 yield Horizontal(
-                    lbl1, lbl2, id="tracking-header"
+                    lbl1, lbl2, id='tracking-header'
                 )
                 
                 # Telemetry
                 distance = self.data[2]
 
-                t1 = Digits(f"{distance}", classes="digit", id="d2")
+                t1 = Digits(f'{distance}', classes="digit", id='d2')
                 t1.border_title = "Distance (km)"
 
                 altitude = self.data[3]
-                t2 = Digits(f"{altitude}", classes="digit", id="d3")
+                t2 = Digits(f'{altitude}', classes="digit", id='d3')
                 t2.border_title = "Altitude (degrees)"
 
                 azimuth = self.data[4]
-                t3 = Digits(f"{azimuth}", classes="digit", id="d4")
+                t3 = Digits(f'{azimuth}', classes="digit", id='d4')
                 t3.border_title = "Azimuth (degrees)"
 
                 yield Vertical(
-                    t1, t2, t3, id="telemetry"
+                    t1, t2, t3, id='telemetry'
                 )
 
                 # Spherical coordinates
@@ -124,56 +128,43 @@ class SatTrackApp(App[None]):
             # Settings tab
             with VerticalScroll(id="settings"):
                 yield Grid(
-                    Static("Setting", id="s1"),
-                    Static("Selected", id="s2"),
-                    Static("Actions", id="s3"),
-                    id="first-row"
+                    Static("Setting", id='s1'),
+                    Static("Selected", id='s2'),
+                    Static("Actions", id='s3'),
+                    id='first-row'
                 )
                 yield Grid(
-                    Static("Satellite"),
-                    Static(self.settings["Satellite"][1]),
-                    Select((sat, sat) for sat in self.settings['Satellite'][0]),
+                    Static("Satellite", classes="label"),
+                    Static("GOES-16", classes="label"),
+                    Select((sat, sat) for sat in sats),
                     classes="grid",
                 )
                 yield Grid(
-                    Static("Coordinates"),
-                    Static(self.settings["Coordinates"][1], id="Coordinates"),
+                    Static("Coordinates", classes="label"),
+                    Static("Decimal Degrees", classes="label"),
                     RadioSet(
-                        RadioButton(label="Decimal Degrees", name="Coordinates", value=self.settings['Coordinates'][1]),
-                        RadioButton(label="DMS", name="Coordinates"), 
-                        id="coordinates-radios"
+                        RadioButton("Decimal Degrees", value=True),
+                        RadioButton("DMS")
                     )
                 )
                 yield Grid(
-                    Static("Rounding"),
-                    Static(str(self.settings['Rounding'][1]), id="Rounding"),
+                    Static("Rounding", classes="label"),
+                    Static(str(self.rounding), classes="label"),
                     RadioSet(
-                        RadioButton(label="0", name="Rounding"),
-                        RadioButton(label="1", name="Rounding"),
-                        RadioButton(label="2", name="Rounding"),
-                        RadioButton(label="3", name="Rounding"),
-                        RadioButton(label="4", name="Rounding"),
-                        RadioButton(label="5", name="Rounding", value=self.settings['Rounding'][1]),
-                        id="rounding-radios"
-                ))
-                yield Grid(
-                    Static("Show XYZ", name="Show XYZ"),
-                    Static(str(self.settings["Show XYZ"][1]), id="showXYZ"),
-                    Switch(self.settings["Show XYZ"][1], name="Show XYZ")
+                        RadioButton(str(2)),
+                        RadioButton(str(3)),
+                        RadioButton(str(4)),
+                        RadioButton(str(5), value=True),
+                        RadioButton("None")
+                    )
                 )
-                
-    def on_radio_set_changed(self, event: RadioSet.Changed) -> None:
-        pressed_name = event.pressed.name
-        selected = event.pressed.label
-        
-        if pressed_name == "Rounding":
-            selected = int(selected._text[0])
-                
-        self.settings[pressed_name][1] = selected
-        event.pressed.value = True
-        self.query_one(f"#{pressed_name}", Static).update(
-            event.pressed.label
-        )
+                yield Grid(
+                    Static("Show XYZ", classes="label"),
+                    Static(str(True), classes="label"),
+                    Switch(True, id="custom-design"),
+                    classes="grid",
+                )
+
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         if event.button.id == "quit":
@@ -201,29 +192,29 @@ class SatTrackApp(App[None]):
 
     def on_mount(self) -> None:
         self.title = "Satellite Tracker" 
-        self.sub_title = f"Tracking {sat_name}"
+        self.sub_title = f'Tracking {sat_name}'
         self.set_interval(1, self.update_numbers, pause=False)
-        
+
 
     # Watch for changes and update numbers
     def on_ready(self) -> None:
         # Set initial state
         self.update_numbers()
-        
-        
+
+
     def update_numbers(self) -> None:
         if self.tracking:
             # Update each of the number containers
-            self.data = skyfieldTracker(line1, line2, sat_name, ground_station, self.settings['Rounding'][1], print_data=False)
+            self.data = skyfieldTracker(line1, line2, sat_name, ground_station, self.rounding, print_data=False)
 
             for d in enumerate(self.data):
-                self.query_one(f"#d{d[0]}").update(f"{d[1]}")
+                self.query_one(f'#d{d[0]}').update(f'{d[1]}')
 
         elif self.clear:
             self.data = [str(0)] * 8
 
             for d in enumerate(self.data):
-                self.query_one(f"#d{d[0]}").update(f"{d[1]}")
+                self.query_one(f'#d{d[0]}').update(f'{d[1]}')
 
             self.clear = False
             self.query_one("#clear-btn").disabled = True

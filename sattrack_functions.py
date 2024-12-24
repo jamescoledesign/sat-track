@@ -1,28 +1,18 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-
 Functions used in satellite-tracking program
-
 
 """
 
 __author__ = "James Cole <james@jamescole.info"
 
-
-# import time
-# import requests
-# import numpy as np
-# import pandas as pd
 from sgp4.api import jday
 from sgp4.api import Satrec
 from datetime import datetime, timezone
-# import matplotlib.pyplot as plt
 from skyfield.api import EarthSatellite, load, wgs84
 import geocoder
-# from pathlib import Path
 import datetime as dt
-# from pynput import keyboard
 import math
 
 
@@ -106,7 +96,7 @@ def convert_to_cartesian(altitude_deg, azimuth_deg):
     return x, y, z
 
 
-def skyfieldTracker(line1, line2, sat_name, ground_station, rounding=4, print_data=False):
+def skyfieldTracker(line1, line2, sat_name, ground_station, rounding, print_data=False):
     positions = []
     
     # Coordinates
