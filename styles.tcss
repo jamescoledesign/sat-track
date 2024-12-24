@@ -1,0 +1,173 @@
+
+Screen {
+    align: center middle;
+    padding: 1;
+}
+
+#switcher {
+    width: 100%;
+}
+
+Grid {
+    grid-size: 3 1;
+    grid-rows: auto;
+    width: 100%;
+}
+
+#title {
+    content-align: center middle;
+    margin-bottom: 1;
+}
+
+#double-border {
+    height: 3;
+    margin-bottom: 1;
+    border: hkey white;
+}
+
+#s1, #s2, #s3 {
+    border: hkey rgba(255, 255, 255, 0.2);
+}
+
+#first-row {
+    margin-top: 1;
+    margin-bottom: 1;
+    height: 3;
+}
+
+#buttons {
+    height: 3;
+    width: 100%;
+}
+
+ContentSwitcher {
+    border: none;
+    width: 90%;
+    height: 1fr;
+}
+
+MarkdownH2 {
+    background: $panel;
+    color: yellow;
+    border: none;
+    padding: 0 1;
+}
+
+.container {
+    height: auto;
+    width: auto;
+}
+
+Switch {
+    height: auto;
+    width: auto;
+}
+
+.label {
+    height: 3;
+    content-align: center middle;
+    width: auto;
+}
+
+#custom-design {
+    background: darkslategrey;
+}
+
+#custom-design > .switch--slider {
+    color: dodgerblue;
+    background: darkslateblue;
+}
+
+#tracking-header {
+    margin: 1 0 1 0; 
+    height: auto;
+}
+
+.tracking-header-item {
+    border: solid $accent;
+    border-title-align: center;
+    content-align: center middle;
+    width: 50%;
+}
+
+#telemetry {
+    border: solid $accent;
+    align: center middle;
+    width: 100%;
+    height: auto;
+    padding: 2 0 0 0;
+    margin-bottom: 1;
+}
+
+#track-btn {
+    width: 100%;
+    border: none;
+    padding: 1;
+    color: black;
+}
+
+#track-btn:hover {
+    opacity: 0.8;
+}
+
+.start {
+    background: $accent;
+}
+
+.stop {
+    background: white;
+}
+
+#spherical-title {
+    margin-bottom: 1;
+}
+
+#spherical-container {
+    padding-top: 1;
+    border: solid $accent;
+    border-title-align: center;
+    content-align: center middle;
+    height: auto;
+    width: 100%;
+    margin-bottom: 2;
+}
+
+.spherical{
+    border: blank $accent;
+    border-title-align: center;
+    content-align: center middle;
+    width: 100%;
+}
+
+Digits {
+    border: blank $accent;
+    border-title-align: center;
+    content-align: center middle;
+    text-align: center;
+    width: 100%;
+    align: center middle;
+    margin-bottom: 2;
+    height: auto;
+}
+
+.digit {
+    text-align: center;
+    content-align: center middle;
+}
+
+.top-button {
+    width: 33.33%;
+}
+
+#tracked-sat {
+    margin-top: 1;
+    padding: 1;
+    border: solid $accent;
+    border-title-align: center;
+    content-align: center middle;
+}
+
+#clear-btn {
+    margin-top: 1;
+    width: 100%;
+}
