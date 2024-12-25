@@ -232,6 +232,8 @@ class SatTrackApp(App[None]):
 
     def action_request_quit(self) -> None:
         self.app.exit()
+        
+
 
 
 if __name__ == "__main__":
