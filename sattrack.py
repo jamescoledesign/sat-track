@@ -15,14 +15,13 @@ from textual.containers import Horizontal, VerticalScroll, Grid, Vertical
 from textual.widgets import *
 
 
-# Load CSV
+# Load CSV of satellite names and TLEs  
 sats_df = pd.read_csv("satellites.csv")
 ts = load.timescale()
 
 class SatTrackApp(App[None]):
     CSS_PATH = "styles.tcss"
     BINDINGS = [("q", "request_quit", "Quit")]
-
 
     # User settings -> To do: Move/write to JSON for persistent storage
     settings = {
