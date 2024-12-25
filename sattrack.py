@@ -115,7 +115,7 @@ class SatTrackApp(App[None]):
                 yield Button("Start tracking", id="track-btn", classes="start")
                 yield Button("Clear", id="clear-btn", classes="clear", disabled=True)
 
-            # Settings tab
+            # Settings tab -> To do: move to tracking page for convenience 
             with VerticalScroll(id="settings"):
                 yield Grid(
                     Static("Setting", id="s1"),
