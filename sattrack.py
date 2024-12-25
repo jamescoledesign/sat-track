@@ -129,6 +129,8 @@ class SatTrackApp(App[None]):
                     Select((sat, sat) for sat in settings['Satellite'][0]),
                     classes="grid",
                 )
+                
+                # To do: Make configurable / get from IP
                 yield Grid(
                     Static("Coordinates"),
                     Static(settings["Coordinates"][1], id="Coordinates"),
@@ -138,6 +140,7 @@ class SatTrackApp(App[None]):
                         id="coordinates-radios"
                     )
                 )
+                
                 yield Grid(
                     Static("Rounding"),
                     Static(str(settings['Rounding'][1]), id="Rounding"),
@@ -150,6 +153,8 @@ class SatTrackApp(App[None]):
                         RadioButton(label="5", name="Rounding", value=settings['Rounding'][1]),
                         id="rounding-radios"
                 ))
+                
+                # To do: Enable setting
                 yield Grid(
                     Static("Show XYZ", name="Show XYZ"),
                     Static(str(settings["Show XYZ"][1]), id="showXYZ"),
