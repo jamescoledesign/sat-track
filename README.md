@@ -1,15 +1,26 @@
 # sat-track
-
 Track satellites using a terminal interface. 
 
+## Setup
+Open the directory in a terminal, ceate a new `venv`, and install the packages.
 
-Create a new venv. Then, open the directory in a terminal and install the packages.
+If using Linux, install `python3.12-venv` if not already installed 
+```bash
+sudo apt install python3.12-venv
+```
 
+Make venv
+```bash
+python3 -m venv satenv
+source satenv/bin/activate
+```
+
+Install requirements
 ```bash
 pip install -r requirements.txt
 ```
 
-Then run the following script to open the UI in a terminal window. 
+Run the program 
 ```bash
 python sattrack.py 
 ```
