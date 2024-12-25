@@ -23,11 +23,8 @@ class SatTrackApp(App[None]):
     CSS_PATH = "styles.tcss"
     BINDINGS = [("q", "request_quit", "Quit")]
 
-    # Your current location (lat/lon)
-    # ground_station = (33.253408, -97.134179)
 
-    # Defaults
-
+    # User settings -> To do: Move/write to JSON for persistent storage
     settings = {
         "Ground Station": (33.253408, -97.134179),
         "Satellite": [sats_df['sat_name'], "GOES-16"],
@@ -63,7 +60,7 @@ class SatTrackApp(App[None]):
                 tracked_sat.border_title = "Satellite"
                 
                 yield tracked_sat
-                        
+
                 # Top boxes
                 lbl1 = Label(data[0], classes="tracking-header-item", id="d0")
                 lbl1.border_title = "Timestamp" 
@@ -159,6 +156,8 @@ class SatTrackApp(App[None]):
                     Switch(settings["Show XYZ"][1], name="Show XYZ")
                 )           
 
+
+    # Radio button selections
     def on_radio_set_changed(self, event: RadioSet.Changed) -> None:
         pressed_name = event.pressed.name
         selected = event.pressed.label
@@ -173,14 +172,14 @@ class SatTrackApp(App[None]):
         )
 
 
-    @on(Select.Changed)
-    def select_changed(self, event: Select.Changed) -> None:
-        # self.title = str(event.value)
+    def on_select_changed(self, event: Select.Changed) -> None:
         self.settings['Satellite'][1] = event.value
         tracked_sat = self.settings['Satellite'][1]
-        self.sub_title = f"Tracking {str(tracked_sat)}"
         self.query_one("#sat_name", Static).update(tracked_sat)
         self.query_one("#tracked-sat", Static).update(tracked_sat)
+        
+        if self.tracking:
+            self.sub_title = f"Tracking {str(tracked_sat)}"
         
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
@@ -189,15 +188,18 @@ class SatTrackApp(App[None]):
         elif event.button.id == "track-btn":
             if self.tracking: 
                 self.tracking = False
+                self.sub_title = f""
                 event.button.label = "Start tracking"
                 event.button.classes = "start"
-                self.notify("Tracking stopped", severity="warning", timeout=3)
+                self.notify("Tracking stopped", severity="warning", timeout=2)
                 self.query_one("#clear-btn").disabled = False
             else: 
                 self.tracking = True
+                tracked_sat = self.settings['Satellite'][1]
+                self.sub_title = f"Tracking {str(tracked_sat)}"
                 event.button.label = "Stop tracking"
                 event.button.classes = "stop"
-                self.notify("Tracking started", timeout=3)
+                self.notify("Tracking started", timeout=2)
                 self.update_numbers()
 
         elif event.button.id == "clear-btn":
