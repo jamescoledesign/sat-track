@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Functions used in satellite-tracking program
 
@@ -95,28 +93,31 @@ def convert_to_cartesian(altitude_deg, azimuth_deg):
     
     return x, y, z
 
-
-def calculate_steps(angle_degrees, steps_per_revolution=200, microstepping=32):
+ 
+def calculate_steps(angle_degrees, starting_angle, steps_per_revolution=200, microstepping=32):
     """
     Credit: ChatGPT
-    Calculate the number of steps needed for a stepper motor to reach a given angle.
+    Calculate the number of steps needed for a stepper motor to reach a given angle from a starting position.
     
     Args:
         angle_degrees (float): The target angle in degrees.
+        starting_angle (float): The current position of the motor (default: 0).
         steps_per_revolution (int): Steps per revolution of the motor (default: 200).
         microstepping (int): Microstepping value (default: 32).
     
     Returns:
         int: Number of steps to move.
     """
+    angle_to_move = angle_degrees - starting_angle  # Account for the current position (starting_angle)
     steps_per_degree = (steps_per_revolution * microstepping) / 360
-    steps = round(angle_degrees * steps_per_degree)
+    steps = round(angle_to_move * steps_per_degree)
+    
     return steps
 
 
-def skyfieldTracker(line1, line2, sat_name, ground_station, rounding, calculate_steps=False, print_data=False):
+def skyfieldTracker(line1, line2, sat_name, ground_station, starting_alt, starting_az, rounding=0, stepper=True, print_data=True):
     positions = []
-    
+
     # Coordinates
     lat = ground_station[0]
     lon = ground_station[1]
@@ -144,18 +145,22 @@ def skyfieldTracker(line1, line2, sat_name, ground_station, rounding, calculate_
         visibility = 'Above'
     else: 
         visibility = 'Below'
+        
+    if stepper:
+        altitude_steps = calculate_steps(alt.degrees, starting_alt)
+        azimuth_steps = calculate_steps(az.degrees, starting_az)  
     
     if print_data:
         # Telemetry
-        # print(f"{sat_name}\t\tTime tracked: {timer}s")
         print("------------------------------------------------------------------")
         print(f'Timestamp:\t{timestamp}')
-        
         print(f'Visibility:\t{visibility} horizon')
-        print('Distance:\t{:.1f} km'.format(distance))
+        print(f'Distance:\t{distance} km')
         print(f'Altitude:\t{alt.degrees}\t({alt})')
         print(f'Azimuth:\t{az.degrees}\t({az})')
         print(f'X, Y, Z:\t{serial_data}')
+        print(f'Stepper altitude steps: {altitude_steps}')
+        print(f'Stepper azimuth steps: {azimuth_steps}')
                
     if rounding > 0:
         distance_r = round(distance.km, rounding)
@@ -166,17 +171,20 @@ def skyfieldTracker(line1, line2, sat_name, ground_station, rounding, calculate_
         z_r = round(z, rounding)
 
         positions = [timestamp, f'{visibility} horizon', alt_r, distance_r, az_r, x_r, y_r, z_r]
+        
+        if stepper:
+            positions.append(altitude_steps)
+            positions.append(azimuth_steps)
+        
+            return positions
 
     else: 
         positions = [timestamp, f'{visibility} horizon', alt.degrees, distance.km, az.degrees, x, y, z]
+        if stepper:
+            positions.append(altitude_steps)
+            positions.append(azimuth_steps)
     
-    if calculate_steps:
-        altitude_steps = calculate_steps(alt.degrees)
-        azimuth_steps = calculate_steps(az.degrees)  
-        positions.append(altitude_steps)
-        positions.append(azimuth_steps)
-    
-    return positions
+            return positions
 
 if __name__ == "__main__":
     makeJulianDateNow()
