@@ -11,7 +11,7 @@ sudo apt install python3.12-venv
 
 Make venv
 ```bash
-sudo python3 -m venv satenv
+sudo python3 -m venv satenv --system-site-packages
 source satenv/bin/activate
 ```
 
