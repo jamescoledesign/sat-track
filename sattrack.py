@@ -28,7 +28,7 @@ class SatTrackApp(App[None]):
         "Ground Station": (33.253408, -97.134179),
         "Satellite": [sats_df['sat_name'], "GOES-16"],
         "Coordinates": [["Decimal Degrees", "DMS"], "Decimal Degrees"],
-        "Rounding": [["2", "3", "4", "5", "None"], 5],
+        "Rounding": ["On", 5, 5],
         "Show XYZ": [[True, False], True]
     }
     
@@ -44,7 +44,7 @@ class SatTrackApp(App[None]):
         data = self.data
         
         yield Header()
-
+        yield Footer()
         # with Horizontal(id="buttons"):
         #     yield Button("Tracking", id="tracking", classes="left-button")
         #     yield Button("Settings", id="settings", classes="middle-button")
@@ -54,40 +54,54 @@ class SatTrackApp(App[None]):
 
             # Tracking tab
             with VerticalScroll(id="tracking"):
+        
                 
-                yield Horizontal(
-                    Select.from_values(values=settings['Satellite'][0], allow_blank=False, classes="nomargin"),
+                yield Grid(
+                    Vertical(
+                        Static(f"Satellite"), 
+                        Select.from_values(values=settings['Satellite'][0], allow_blank=False, classes="dropdown"),
+                        id="drop"
+                    ),
+                    Horizontal(
+                        Vertical(
+                        Static(f"Rounding", id="show-rounding"), 
+                        Switch(settings["Show XYZ"][1], name="round", classes="rounding-switch")
+                        ),
+                        Vertical(
+                                Static("Decimals", id="show-rounding"),
+                                Input(value=str(settings['Rounding'][1]), 
+                                placeholder=str(settings['Rounding'][1]), 
+                                type="integer"),
+                                id="rounding-val"
+                        ),
+                        id="switch-container"
+                    ),
                     Button("Start tracking", id="track-btn", classes="start"),
-                    id="top-controls"
-                )
-
+                    classes="options"
+                )     
+                
                 t1 = Horizontal(
                     Label("Time: "), 
                     Label(data[0], id="d0"), 
                     id="timestamp",
                 )
-                yield t1
                 
                 t2 = Grid(
                     Static(content=data[1], id="d1"), 
                     Digits(f"{data[2]}", id="d2", classes="digit"),
                     classes="tracking-header-item",
                 )
-                
                 t2.border_title = "Altitude (degrees)"
-                yield t2
-        
+                
                 t3 = Grid(
                     Digits(f"{data[3]}", classes="digit", id="d3"), classes="tracking-header-item"
                 )
                 t3.border_title = "Distance (km)"
-                yield t3
-          
+               
                 t4 = Grid(
                     Digits(f"{data[4]}", classes="digit", id="d4"), classes="tracking-header-item"
                 )
                 t4.border_title = "Azimuth (degrees)"
-                yield t4
 
                 # Spherical coordinates
                 x = data[5]
@@ -109,11 +123,11 @@ class SatTrackApp(App[None]):
                                            id="spherical-container")
 
                 spherical_container.border_title = "Spherical coordinates" 
-
-                yield spherical_container
                 
-                yield Footer()
-
+                yield Vertical(
+                    t1, t2, t3, t4, spherical_container, id="tracking-content"
+                )
+        
             # Settings tab -> To do: move to tracking page for convenience 
             with VerticalScroll(id="settings"):
                 yield Grid(
@@ -160,6 +174,29 @@ class SatTrackApp(App[None]):
                     Switch(settings["Show XYZ"][1], name="Show XYZ")
                 )           
 
+    def on_input_changed(self, event: Input.Changed) -> None:
+        rounding = self.settings['Rounding'][0]
+        if rounding: 
+            input = event.value
+            if input != "":
+                self.settings['Rounding'][1] = event.value
+            
+    def on_switch_changed(self, event: Switch.Changed) -> None: 
+        val = event.value
+        show_hide = self.query_one(f"#rounding-val", Vertical)
+ 
+        if val: 
+            self.settings['Rounding'][0] = "On"
+            self.settings['Rounding'][1] = self.settings['Rounding'][2]
+            show_hide.styles.display = "block"
+            self.notify("Rounding is on", timeout=1)
+        else: 
+            self.settings['Rounding'][0] = "Off"
+            self.settings['Rounding'][2] = self.settings['Rounding'][1]
+            self.settings['Rounding'][1] = 0
+            show_hide.styles.display = "none"
+            self.notify("Rounding is off", timeout=1)
+            
 
     # Radio button selections
     def on_radio_set_changed(self, event: RadioSet.Changed) -> None:
@@ -174,7 +211,6 @@ class SatTrackApp(App[None]):
         self.query_one(f"#{pressed_name}", Static).update(
             event.pressed.label
         )
-
 
     def on_select_changed(self, event: Select.Changed) -> None:
         self.settings['Satellite'][1] = event.value
@@ -246,7 +282,7 @@ class SatTrackApp(App[None]):
             data = skyfieldTracker(line1, line2, 
                                    settings['Satellite'][1],
                                    settings['Ground Station'], 
-                                   settings['Rounding'][1], 
+                                   int(settings['Rounding'][1]), 
                                    print_data=False)
             
             # Adjust visibility background color

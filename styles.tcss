@@ -4,7 +4,7 @@ Button:hover {
 
 ContentSwitcher {
     border: none;
-    width: 90%;
+    padding: 1;
     height: 1fr;
 }
 
@@ -22,26 +22,28 @@ Grid {
     grid-size: 6 1;
     grid-rows: auto;
     width: 100%;
-    content-align: center middle;
+    content-align: left bottom;
+    padding-left: -1;
+}
+
+Horizontal {
+    column-span: 2;
+    margin-left: 1;
 }
 
 Screen {
     align: center middle;
+    background: black;
 }
 
 Select {
     border: none;
-    height: 3;
+    padding-left: -1;
 }
 
 Switch {
     height: auto;
     width: auto;
-}
-
-Vertical {
-    margin: 1 0 0 0;
-    height: auto;
 }
 
 VerticalScroll {
@@ -50,7 +52,7 @@ VerticalScroll {
     scrollbar-background-hover: ansi_black;
     scrollbar-color: dimgray;
     scrollbar-color-active: dimgray;
-    scrollbar-color-hover: pink;
+    scrollbar-color-hover: dimgray;
 }
 
 #select {
@@ -94,6 +96,13 @@ VerticalScroll {
     background: darkslateblue;
 }
 
+#tracking-content {
+    background: rgba(255, 255, 255, 0.14);
+    height: auto;
+    padding: 1;
+    margin: 1 0 0 0;
+}
+
 #tracking-header {
     margin-bottom: 1;
     height: 3;
@@ -107,11 +116,12 @@ VerticalScroll {
     content-align: center middle;
 }
 
+
 #timestamp {
     column-span: 6;
-    align: right middle;
+    align: left middle;
     height: 1;
-    margin: 1 1 0 0;
+    color: gray;
 }
 
 #ground-station {
@@ -126,7 +136,8 @@ VerticalScroll {
 
 #d1 {
     height: auto;
-    margin: 2 0;
+    width: 100%;
+    margin: 2 1;
     content-align: center middle;
 }
 
@@ -139,35 +150,33 @@ VerticalScroll {
 }
 
 .above {
-    background: rgba(0, 255, 0, 0.2);
+    background: rgba(0, 255, 0, 0.08);
     color: rgba(0, 255, 0, 1);
 }
 
 .below {
-    background: rgba(255, 0, 0, 0.2);
+    background: rgba(255, 0, 0, 0.08);
     color: rgba(255, 0, 0, 1);
 }
 
-.nomargin {
-    margin: 0;
-}
-
 .start {
+    column-span: 2;
     background: orange;
     color: black;
-    width: 33%;
     border: none;
     height: 3;
-    margin: 0 0 0 2;
+    margin: 1 0 0 2;
+    width: 100%;
 }
 
 .stop {
+    column-span: 3;
     background: white;
-    width: 33%;
     border: none;
     height: 3;
     color: black;
-    margin: 0 0 0 2;
+    margin: 1 0 0 2;
+    width: 100%;
 }
 
 #spherical-title {
@@ -181,7 +190,6 @@ VerticalScroll {
     content-align: center middle;
     height: auto;
     width: 100%;
-    margin-bottom: 2;
 }
 
 .spherical{
@@ -236,7 +244,12 @@ VerticalScroll {
 }
 
 #drop {
-    width: auto;
+    column-span: 2;
+}
+
+.dropdown {
+    margin-left: -1;
+    margin-right: 1;
 }
 
 .control-label {
@@ -244,6 +257,37 @@ VerticalScroll {
 }
 
 #top-controls {
-    height: auto;
+    height: 5;
+    margin: 0 0 1 0;
+}
+
+.switch-container {
+    column-span: 3;
+    width: 100%;
+}
+
+#rounding {
+    height: 3;
     margin: 1 0 0 0;
+}
+
+.rounding-switch {
+    width: auto;
+    margin-left: -1;
+}
+
+Input {
+    width: 10;
+    margin-left: -1;
+}
+
+.options {
+    width: 100%;
+    margin: 0 0 0 1;
+    height: 10%;
+}
+
+#rounding-val {
+    display: block;
+    margin-left: 2;
 }
