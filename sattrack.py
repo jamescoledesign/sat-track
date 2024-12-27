@@ -111,6 +111,8 @@ class SatTrackApp(App[None]):
                 spherical_container.border_title = "Spherical coordinates" 
 
                 yield spherical_container
+                
+                yield Footer()
 
             # Settings tab -> To do: move to tracking page for convenience 
             with VerticalScroll(id="settings"):
