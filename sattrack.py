@@ -45,48 +45,49 @@ class SatTrackApp(App[None]):
         
         yield Header()
 
-        with Horizontal(id="buttons"):
-            yield Button("Tracking", id="tracking", classes="left-button")
-            yield Button("Settings", id="settings", classes="middle-button")
-            yield Button("Quit", id="quit", classes="right-button")
+        # with Horizontal(id="buttons"):
+        #     yield Button("Tracking", id="tracking", classes="left-button")
+        #     yield Button("Settings", id="settings", classes="middle-button")
+        #     yield Button("Quit", id="quit", classes="right-button")
 
         with ContentSwitcher(initial="tracking", id="switcher"):
 
             # Tracking tab
             with VerticalScroll(id="tracking"):
                 
-                tracked_sat = Static(settings['Satellite'][1], id="tracked-sat")
-                tracked_sat.border_title = "Satellite"
-                
-                yield tracked_sat
-
-                # Top boxes
-                lbl1 = Label(data[0], classes="tracking-header-item", id="d0")
-                lbl1.border_title = "Timestamp" 
-                lbl2 = Label(data[1], classes="tracking-header-item", id="d1")
-                lbl2.border_title = "Visibility" 
-
                 yield Horizontal(
-                    lbl1, lbl2, id="tracking-header"
+                    Select.from_values(values=settings['Satellite'][0], allow_blank=False, classes="nomargin"),
+                    Button("Start tracking", id="track-btn", classes="start"),
+                    id="top-controls"
+                )
+
+                t1 = Horizontal(
+                    Label("Time: "), 
+                    Label(data[0], id="d0"), 
+                    id="timestamp",
+                )
+                yield t1
+                
+                t2 = Grid(
+                    Static(content=data[1], id="d1"), 
+                    Digits(f"{data[2]}", id="d2", classes="digit"),
+                    classes="tracking-header-item",
                 )
                 
-                # Telemetry
-                distance = data[2]
-
-                t1 = Digits(f"{distance}", classes="digit", id="d2")
-                t1.border_title = "Distance (km)"
-
-                altitude = data[3]
-                t2 = Digits(f"{altitude}", classes="digit", id="d3")
                 t2.border_title = "Altitude (degrees)"
-
-                azimuth = data[4]
-                t3 = Digits(f"{azimuth}", classes="digit", id="d4")
-                t3.border_title = "Azimuth (degrees)"
-
-                yield Vertical(
-                    t1, t2, t3, id="telemetry"
+                yield t2
+        
+                t3 = Grid(
+                    Digits(f"{data[3]}", classes="digit", id="d3"), classes="tracking-header-item"
                 )
+                t3.border_title = "Distance (km)"
+                yield t3
+          
+                t4 = Grid(
+                    Digits(f"{data[4]}", classes="digit", id="d4"), classes="tracking-header-item"
+                )
+                t4.border_title = "Azimuth (degrees)"
+                yield t4
 
                 # Spherical coordinates
                 x = data[5]
@@ -110,9 +111,6 @@ class SatTrackApp(App[None]):
                 spherical_container.border_title = "Spherical coordinates" 
 
                 yield spherical_container
-
-                yield Button("Start tracking", id="track-btn", classes="start")
-                yield Button("Clear", id="clear-btn", classes="clear", disabled=True)
 
             # Settings tab -> To do: move to tracking page for convenience 
             with VerticalScroll(id="settings"):
@@ -180,7 +178,7 @@ class SatTrackApp(App[None]):
         self.settings['Satellite'][1] = event.value
         tracked_sat = self.settings['Satellite'][1]
         self.query_one("#sat_name", Static).update(tracked_sat)
-        self.query_one("#tracked-sat", Static).update(tracked_sat)
+        # self.query_one("#tracked-sat", Static).update(tracked_sat)
         
         if self.tracking:
             self.sub_title = f"Tracking {str(tracked_sat)}"
@@ -196,7 +194,7 @@ class SatTrackApp(App[None]):
                 event.button.label = "Start tracking"
                 event.button.classes = "start"
                 self.notify("Tracking stopped", severity="warning", timeout=2)
-                self.query_one("#clear-btn").disabled = False
+                # self.query_one("#clear-btn").disabled = False
             else: 
                 self.tracking = True
                 tracked_sat = self.settings['Satellite'][1]
@@ -248,6 +246,12 @@ class SatTrackApp(App[None]):
                                    settings['Ground Station'], 
                                    settings['Rounding'][1], 
                                    print_data=False)
+            
+            # Adjust visibility background color
+            if data[1] == "Above horizon": 
+                self.query_one(f"#d1").classes = "above"
+            else: 
+                self.query_one(f"#d1").classes = "below"
 
             # Update each of the number containers
             for d in enumerate(data):

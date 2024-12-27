@@ -147,10 +147,10 @@ def skyfieldTracker(line1, line2, sat_name, ground_station, rounding, print_data
         y_r = round(y, rounding)
         z_r = round(z, rounding)
 
-        positions = [timestamp, f'{visibility} horizon', distance_r, alt_r, az_r, x_r, y_r, z_r]
+        positions = [timestamp, f'{visibility} horizon', az_r, distance_r, x_r, y_r, z_r]
     
     else: 
-        positions = [timestamp, f'{visibility} horizon', distance.km, alt.degrees, az.degrees, x, y, z]
+        positions = [timestamp, f'{visibility} horizon', alt.degrees, distance.km, az.degrees, x, y, z]
 
     return positions
 

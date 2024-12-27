@@ -1,5 +1,5 @@
 # sat-track
-Track satellites using a terminal interface. 
+A Text User Interface (TUI) for tracking satellites in a terminal window. 
 
 ## Setup
 Open the directory in a terminal, ceate a new `venv`, and install the packages.
