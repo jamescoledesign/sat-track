@@ -6,6 +6,9 @@ Satellite Tracker
 __author__ = "James Cole <james@jamescole.info"
 
 
+import os
+import time
+from dotenv import load_dotenv
 from sattrack_functions import *
 import pandas as pd
 from skyfield.api import load
@@ -14,6 +17,13 @@ from textual.app import App, ComposeResult
 from textual.containers import Horizontal, VerticalScroll, Grid, Vertical
 from textual.widgets import *
 
+load_dotenv()
+
+# Get user's lat/lon
+lat = float(os.getenv("LOCATION_LATITUDE"))
+lon = float(os.getenv("LOCATION_LONGITUDE"))
+
+print(f'\nLattitude: {lat}\nLongitude: {lon}\n')
 
 # Load CSV of satellite names and TLEs  
 sats_df = pd.read_csv("satellites.csv")
@@ -25,7 +35,7 @@ class SatTrackApp(App[None]):
 
     # User settings -> To do: Move/write to JSON for persistent storage
     settings = {
-        "Ground Station": (33.253408, -97.134179),
+        "Ground Station": (lat, lon),
         "Satellite": [sats_df['sat_name'], "GOES-16"],
         "Coordinates": [["Decimal Degrees", "DMS"], "Decimal Degrees"],
         "Rounding": ["On", 5, 5],
@@ -310,20 +320,15 @@ class SatTrackApp(App[None]):
 
     def action_request_quit(self) -> None:
         self.app.exit()
-        
 
-get_location = False
-
+print("Starting app...")
+    
 if __name__ == "__main__":
     
-    if get_location:
-        # Get user's lat/lon 
-        lat, lon = getMyLocation()
-        print(f'Lattitude: {lat}\nLongitude: {lon}')
-        
-        # Don't ping geocoder too frequently
-        get_location = False
+    time.sleep(2)
     
     # Run CLI app
     SatTrackApp().run()
     
+    # Confirm exit
+    print("App closed")

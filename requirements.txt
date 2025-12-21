@@ -18,6 +18,7 @@ pip
 platformdirs
 Pygments
 python-dateutil
+python-dotenv
 pytz
 ratelim
 requests

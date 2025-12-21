@@ -33,6 +33,23 @@ python sattrack.py
 
 <br />
 
+Make a `.env` file in the root directory
+
+```
+touch .env
+```
+
+Open the `.env` file and add your latitude and longitude as environmental variables. Save and close the file. 
+
+Example: 
+```
+LOCATION_LATITUDE=54.321
+LOCATION_LONGITUDE=-76.543
+```
+
+**Note:**
+- Be sure to update the TLEs in `satellites.csv` every few months
+
 **User Interface**
 
 <img src="./images/sattrack-ui-v4.png" style="width: 600px"/>
