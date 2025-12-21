@@ -9,9 +9,15 @@ If using Linux, install `python3.12-venv` if not already installed
 sudo apt install python3.12-venv
 ```
 
-Make venv
+Make venv (Linux)
 ```bash
 sudo python3 -m venv satenv --system-site-packages
+source satenv/bin/activate
+```
+
+Make venv (Mac, etc.)
+```bash
+python3 -m venv satenv
 source satenv/bin/activate
 ```
 

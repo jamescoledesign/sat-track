@@ -312,6 +312,18 @@ class SatTrackApp(App[None]):
         self.app.exit()
         
 
+get_location = False
+
 if __name__ == "__main__":
+    
+    if get_location:
+        # Get user's lat/lon 
+        lat, lon = getMyLocation()
+        print(f'Lattitude: {lat}\nLongitude: {lon}')
+        
+        # Don't ping geocoder too frequently
+        get_location = False
+    
+    # Run CLI app
     SatTrackApp().run()
     
