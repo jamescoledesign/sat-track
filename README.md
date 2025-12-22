@@ -49,6 +49,9 @@ LOCATION_LONGITUDE=-76.543
 ```
 
 ## Telescope rotation math
+- Facing north, rotate clockwise towards the target azimuth (X)
+- At the target azimuth, tilt the telescope up towards the target altitude (Y)
+
 <img src="./images/rotation_math.jpg" style="width: 800px"/>
 
 
