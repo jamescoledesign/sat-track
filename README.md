@@ -1,5 +1,6 @@
 # sat-track
-A Text User Interface (TUI) for tracking satellites in a terminal window. 
+A Text User Interface (TUI) for tracking satellites in a terminal window. Save your latitude and longitude in a `.env` file and run `python sattrack.py` to see the satellite's approximate position relative to your location. Cartesian coordinates are also generated for use in rotating a radio telescope. 
+
 
 ## Setup
 Open the directory in a terminal, ceate a new `venv`, and install the packages.
@@ -46,6 +47,10 @@ Example:
 LOCATION_LATITUDE=54.321
 LOCATION_LONGITUDE=-76.543
 ```
+
+## Telescope rotation math
+<img src="./images/rotation_math.jpg" style="width: 800px"/>
+
 
 **Note:**
 - Be sure to update the TLEs in `satellites.csv` every few months
