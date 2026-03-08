@@ -1,5 +1,9 @@
 # sat-track
-A Text User Interface (TUI) for tracking satellites in a terminal window. Save your latitude and longitude in a `.env` file and run `python sattrack.py` to see the satellite's approximate position relative to your location. Cartesian coordinates are provided to aid in positioning a radio telescope. Approximate stellite locations are calculated using two-line elements (TLEs) and [Skyfield](https://rhodesmill.org/skyfield/). 
+A Text User Interface (TUI) for tracking satellites in a terminal window. Save your latitude and longitude in a `.env` file and run `python sattrack.py` to see the satellite's approximate position relative to your location. 
+
+Cartesian coordinates are provided to aid in positioning a radio telescope. Approximate stellite locations are calculated using two-line elements (TLEs) and [Skyfield](https://rhodesmill.org/skyfield/). 
+
+**Note:** I have not been able to determine if the tracking is accurate, so please let me know if you have any success using this tool.  
 
 
 ## Setup
